@@ -27,7 +27,9 @@ const HomePage = () => {
         <Link href="/create">Create new post</Link>
         {posts.map((post) => (
           <div key={post._id}>
-            <div><h1>{post.title}</h1></div>
+            <div>
+              <Link href={`/post/${post._id}`}><h1>{post.title}</h1></Link>
+            </div>
             <div><p>{post.content}</p></div>
           </div>
         ))
