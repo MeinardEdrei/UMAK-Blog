@@ -1,4 +1,4 @@
-"use client"; // required to do when you're using react components
+'use client'; // required to do when you're using react components
 
 import axios from 'axios';
 import Link from 'next/link';
@@ -24,6 +24,7 @@ const HomePage = () => {
   return (
     <div>
       <section>
+        <Link href="/create">Create new post</Link>
         {posts.map((post) => (
           <div key={post._id}>
             <div><h1>{post.title}</h1></div>
