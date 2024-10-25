@@ -16,8 +16,8 @@ export async function POST(req) {
     await connectDB();
 
     try {
-        const { title, content } = await req.json();
-        const newPost = new Post({ title, content});
+        const { title, content, imageUrl } = await req.json();
+        const newPost = new Post({ title, content, imageUrl });
         await newPost.save();
 
         return new Response(JSON.stringify({ message: 'Post created successfully' }), { status: 201 });
