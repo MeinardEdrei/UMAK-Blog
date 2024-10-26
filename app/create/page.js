@@ -22,7 +22,6 @@ export default function createPost () {
         const response = await axios.post('/api/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Content-Length': formData.length,
           },
         });
         imageUrl = response.data.secure_url;
