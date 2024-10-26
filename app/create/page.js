@@ -6,12 +6,31 @@ import { useState } from "react";
 export default function createPost () {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [image, setImage] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post('/api/posts', { title, content });
+      const formData = new FormData();
+      let imageUrl = '';
+      console.log(image);
+      if (image) {
+        formData.append('image', image);
+
+        // For cloud storage
+        const response = await axios.post('/api/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Content-Length': formData.length,
+          },
+        });
+        imageUrl = response.data.secure_url;
+      }
+
+      // For MongoDB Data
+      await axios.post('/api/posts', { title, content, imageUrl });
+
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +57,7 @@ export default function createPost () {
           <input
             type="file"
             placeholder="Image"
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
             accept="image/*"
             className="border-slate-500 border-2 p-3 text-black"
           />
