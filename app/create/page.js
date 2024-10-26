@@ -14,7 +14,7 @@ export default function createPost () {
     try {
       const formData = new FormData();
       let imageUrl = '';
-      console.log(image);
+      
       if (image) {
         formData.append('image', image);
 
