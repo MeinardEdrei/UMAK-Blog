@@ -7,6 +7,7 @@ export default function createPost () {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,6 +15,10 @@ export default function createPost () {
     try {
       const formData = new FormData();
       let imageUrl = '';
+
+      // GETTING USER DETAILS
+      const user = await axios.get('/api/users'); 
+      setUserDetails(user);
       
       if (image) {
         formData.append('image', image);
@@ -28,7 +33,14 @@ export default function createPost () {
       }
 
       // For MongoDB Data
-      await axios.post('/api/posts', { title, content, imageUrl });
+      await axios.post('/api/posts', 
+      { title, 
+        content, 
+        imageUrl, 
+        userID: userDetails._id, 
+        username: userDetails.username, 
+        email: userDetails.email 
+      });
 
     } catch (error) {
       console.error(error);

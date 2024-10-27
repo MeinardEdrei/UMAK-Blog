@@ -47,7 +47,7 @@ const HomePage = () => {
                 </div>
                 { post.imageUrl ? (
                   <div>
-                    <div><p className='py-5'>{post.content}</p></div>
+                    {/* <div><p className='py-5'>{post.content}</p></div> */}
                     <Image 
                       src={post.imageUrl} 
                       alt={post.title} 
