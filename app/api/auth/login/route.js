@@ -1,26 +1,25 @@
+import { NextResponse } from 'next/server';
 import connectDB from '../../../../lib/db'; 
 import User from '../../../../models/User';
-import bcrypt from 'bcryptjs';
 
 export async function POST(req) {
     await connectDB();
 
     try {
-        const { email, password } = req.body;
+        const { email, password } = await req.json();
         const user = await User.findOne({ email });
 
         if (!user) {
-                return res.status(401).json({ error: 'Invalid email or password' });
-            }
-
-        // COMPARE password 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid email or password' });
+            return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
         }
 
-        return res.status(200).json({ message: 'Login successful' });
+        if (password !== user.password) {
+            return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
+        }
+
+        return NextResponse.json({ message: 'Login successful' }, { status: 200 });
     } catch (err) {
-        console.error(err)
+        console.error(err.message)
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

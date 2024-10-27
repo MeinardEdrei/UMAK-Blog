@@ -24,7 +24,7 @@ export async function POST(req) {
         const newUser = new User({ username, email, password });
         await newUser.save();
 
-        return new Response(JSON.stringify({ message: 'User created successfully' }), { status: 201 });
+        return new Response(JSON.stringify({ message: 'User created successfully' }), { status: 200 });
     } catch (err) {
         console.error('Server error details:', {
             message: err.message,

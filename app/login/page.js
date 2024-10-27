@@ -5,8 +5,10 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { FaGithub } from 'react-icons/fa';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -16,8 +18,10 @@ export default function Login() {
         setError('');
         
         try {
-            await axios.post('/api/auth/login', { email, password });
-            console.log('login success');
+            const res = await axios.post('/api/auth/login', { email, password });
+            if (res.status === 200 ) { 
+                router.push('/');
+            }
         } catch (err) {
             setError(err.response?.data?.error || 'Invalid email or password');
         }
@@ -62,7 +66,9 @@ export default function Login() {
                         <button 
                             style={{backgroundColor: '#111C4E'}}
                             className="text-white p-2 flex items-center justify-center rounded"
-                            onClick={() => signIn('github')}>
+                            onClick={async () => {
+                                await signIn('github')
+                            }}>
                             <FaGithub className="h-5 w-5 mr-2" aria-hidden="true"/> Sign in with Github
                         </button>
                 </div>

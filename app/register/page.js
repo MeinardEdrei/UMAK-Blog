@@ -17,15 +17,16 @@ export default function Login() {
         setError('');
 
         try {
-            await axios.post('/api/users', { username, email, password });
-
-            if (response.status === 201) {
+            const res = await axios.post('/api/users', { username, email, password });
+            
+            if (res.status === 200) {
                 router.push('/login');
             }
+            
         } catch (err) {
-            const errorMessage = err.response?.data?.error || 'Registration failed';
+            const errorMessage = err.response?.data?.error;
             setError(errorMessage);
-            console.error('Registration error:', errorMessage);
+            console.error('Registration error:', errorMessage || null);
         }
     }
 
