@@ -20,6 +20,7 @@ const handler = NextAuth({
             async authorize(credentials) {
                 try {
                     await connectDB();
+                    
                     const { username, email, password } = credentials;
 
                     const user = await User.findOne({ email: credentials.email });
@@ -36,7 +37,7 @@ const handler = NextAuth({
 
                     return {
                         id: user._id.toString(),
-                        name: user.name,
+                        username: user.username,
                         email: user.email
                     };
                 } catch (error) {
@@ -48,25 +49,24 @@ const handler = NextAuth({
     ],
     session: {
         strategy: "jwt",
-        maxAge: 60,
+        maxAge: 30 * 24 * 60 * 60, //30 days
     },
     callbacks: {
         async session({ session, token }) {
             session.user.id = token.sub;
-            session.user.name = token.name; 
+            session.user.username = token.username; 
             session.user.email = token.email; 
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
                 token.sub = user.id;
-                token.name = user.name;
+                token.username = user.username;
                 token.email = user.email;
             }
             return token;
         }
     },
-    debug: true,
     pages: {
         signIn: '/login',
         error: '/login',

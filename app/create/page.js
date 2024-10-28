@@ -2,27 +2,57 @@
 
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function createPost () {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const { data: session, status } = useSession();
 
-  const { data: session } = useSession();
+  useEffect(() => {
+    console.log('Session Status:', status);
+    console.log('Session Data:', session);
+  }, [session, status]);
+
+  // THIS IS FOR ROUTING ATTACK
+  useEffect(() => {
+    let isMounted = true;
+
+    if (status === "unauthenticated" && isMounted) {
+        setShouldRedirect(true);
+    }
+
+    return () => {
+        isMounted = false;
+    };
+  }, [status]);
+
+  useEffect(() => {
+      if (shouldRedirect) {
+          router.push('/login');
+      }
+  }, [shouldRedirect, router]);
+  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log('Session Details:', session);
     try {
-      const formData = new FormData();
-      let imageUrl = '';
+      if (!session?.user?.id || !session?.user?.username || !session?.user?.email) {
+        throw new Error('Missing user information. Please log in again.');
+      }
+      if (!session?.user?.id) {
+        throw new Error('User not authenticated');
+      }
 
-      // GETTING USER DETAILS
-      const user = await axios.get('/api/users'); 
-      setUserDetails(user);
-      
+      let imageUrl = '';
       if (image) {
+        const formData = new FormData();
         formData.append('image', image);
 
         // For cloud storage
@@ -35,20 +65,24 @@ export default function createPost () {
       }
 
       // For MongoDB Data
-      await axios.post('/api/posts', 
+      const res = await axios.post('/api/posts', 
       { title, 
         content, 
         imageUrl, 
-        userID: session.user.id, 
-        username: session.user.name, 
+        userId: session.user.id, 
+        username: session.user.username, 
         email: session.user.email 
       });
 
+      if (res.status === 201) {
+        router.push('/');
+      }
     } catch (error) {
       console.error(error);
     }
   }
 
+  
   return (
     <div className="flex justify-center">
       <section className="m-20">
