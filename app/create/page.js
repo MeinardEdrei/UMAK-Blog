@@ -41,7 +41,7 @@ export default function createPost () {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Session Details:', session);
+    
     try {
       if (!session?.user?.id || !session?.user?.username || !session?.user?.email) {
         throw new Error('Missing user information. Please log in again.');

@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { formatDistanceToNow } from 'date-fns';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
@@ -53,6 +54,12 @@ const HomePage = () => {
             <div 
               key={post._id}
               className=' p-5 border-t-2 border-t-slate-600 border-black'>
+                <div className='mb-2'>
+                  <h1 className='font-serif text-sm'>
+                    @{post.username} | {post.email} | 
+                    {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                  </h1>
+                </div>
                 <div>
                   <Link 
                       href={`/post/${post._id}`}>
