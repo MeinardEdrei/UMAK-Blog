@@ -31,62 +31,66 @@ const HomePage = () => {
   }, [session, status]);
   
   return (
-    <div className='flex justify-center'>
-      <section className='m-10 flex flex-col'>
-        <div>
-          { session ? (
-              <Link 
-                className='p-2 text-white rounded-md' 
-                style={{backgroundColor: 'rgb(17, 28, 78)'}} 
-                href="/create">Create new post
-              </Link>
-          ) : (
-              <Link 
-                className='p-2 text-white rounded-md' 
-                style={{backgroundColor: 'rgb(17, 28, 78)'}} 
-                href="/login">Create new post
-              </Link>
-          )}
-          
-        </div>
-        <div className='my-10'>
-          {posts.map((post) => (
-            <div 
-              key={post._id}
-              className=' p-5 border-t-2 border-t-slate-600 border-black'>
-                <div className='mb-2'>
-                  <h1 className='font-serif text-sm'>
-                    @{post.username} | {post.email} | 
-                    {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-                  </h1>
-                </div>
-                <div>
-                  <Link 
-                      href={`/post/${post._id}`}>
-                  <h1 className='font-bold text-xl'>
-                      {post.title}
-                  </h1>
-                  </Link>
-                </div>
-                { post.imageUrl ? (
-                  <div>
-                    {/* <div><p className='py-5'>{post.content}</p></div> */}
-                    <Image 
-                      src={post.imageUrl} 
-                      alt={post.title} 
-                      width={500} 
-                      height={300} 
-                      className="rounded-md" 
-                    />
+    <div className='flex justify-center w-full'>
+      <div className='flex flex-col w-[620px]'>
+        <section className='flex p-5 w-[620px] border border-black my-2'>
+          <div className='p-3'>
+            { session ? (
+                <Link 
+                  className='p-2 text-white rounded-md' 
+                  style={{backgroundColor: 'rgb(17, 28, 78)'}} 
+                  href="/create">Create new post
+                </Link>
+            ) : (
+                <Link 
+                  className='p-2 text-white rounded-md' 
+                  style={{backgroundColor: 'rgb(17, 28, 78)'}} 
+                  href="/login">Create new post
+                </Link>
+            )}
+            
+          </div>
+        </section>
+
+        <section className='m-10 flex flex-col flex-grow'>
+          <div className='my-10 flex-grow overflow-y-auto min-h-[300px]'>
+            {posts.length === 0 ? (
+              <div className='text-center text-gray-500'>No posts available.</div>
+            ) : (
+              posts.map((post) => (
+                <div 
+                  key={post._id}
+                  className='p-5 border-t-2 border-t-slate-600 border-black'>
+                  <div className='mb-2'>
+                    <h1 className='font-serif text-sm'>
+                      @{post.username} | {post.email} | 
+                      {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                    </h1>
                   </div>
-                ) : (
-                  <div><p>{post.content}</p></div>
-                )}
-            </div>
-          ))}
-        </div>
-        
-      </section>
+                  <div>
+                    <Link href={`/post/${post._id}`}>
+                      <h1 className='font-bold text-xl'>{post.title}</h1>
+                    </Link>
+                  </div>
+                  {post.imageUrl ? (
+                    <div>
+                      <Image 
+                        src={post.imageUrl} 
+                        alt={post.title} 
+                        width={500} 
+                        height={300} 
+                        className="rounded-md" 
+                      />
+                    </div>
+                  ) : (
+                    <div><p>{post.content}</p></div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   )
 }
