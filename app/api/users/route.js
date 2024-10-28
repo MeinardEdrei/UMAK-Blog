@@ -32,7 +32,6 @@ export async function POST(req) {
             code: err.code,
             name: err.name
         });
-        console.error(err.message);
         return new Response(JSON.stringify({ error: 'User creation failed' }), { status: 500 });
     }
 }

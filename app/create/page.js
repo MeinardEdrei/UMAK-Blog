@@ -1,13 +1,15 @@
 'use client';
 
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 export default function createPost () {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
-  const [userDetails, setUserDetails] = useState(null);
+
+  const { data: session } = useSession();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,9 +39,9 @@ export default function createPost () {
       { title, 
         content, 
         imageUrl, 
-        userID: userDetails._id, 
-        username: userDetails.username, 
-        email: userDetails.email 
+        userID: session.user.id, 
+        username: session.user.name, 
+        email: session.user.email 
       });
 
     } catch (error) {

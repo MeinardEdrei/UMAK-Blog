@@ -18,12 +18,21 @@ export default function Login() {
         setError('');
         
         try {
-            const res = await axios.post('/api/auth/login', { email, password });
-            if (res.status === 200 ) { 
+            const result = await signIn('credentials', {
+                email,
+                password,
+                redirect: false
+            });
+
+            if (result?.error) {
+                setError('Invalid email or password');
+            } else {
                 router.push('/');
+                router.refresh();
             }
         } catch (err) {
-            setError(err.response?.data?.error || 'Invalid email or password');
+            console.error('Login error:', err);
+            setError('An error occurred during login');
         }
     }
 

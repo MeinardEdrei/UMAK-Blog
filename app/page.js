@@ -1,13 +1,15 @@
 'use client'; // required to do when you're using react components
 
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
-
+  const { data: session, status } = useSession();
+  console.log("Session:", session);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,16 +23,30 @@ const HomePage = () => {
     fetchData();
     
   }, [])
+
+  useEffect(() => {
+    console.log("Session status:", status);
+    console.log("Session data:", session);
+  }, [session, status]);
   
   return (
     <div className='flex justify-center'>
       <section className='m-10 flex flex-col'>
         <div>
-          <Link 
-            className='p-2 text-white rounded-md' 
-            style={{backgroundColor: 'rgb(17, 28, 78)'}} 
-            href="/create">Create new post
-          </Link>
+          { session ? (
+              <Link 
+                className='p-2 text-white rounded-md' 
+                style={{backgroundColor: 'rgb(17, 28, 78)'}} 
+                href="/create">Create new post
+              </Link>
+          ) : (
+              <Link 
+                className='p-2 text-white rounded-md' 
+                style={{backgroundColor: 'rgb(17, 28, 78)'}} 
+                href="/login">Create new post
+              </Link>
+          )}
+          
         </div>
         <div className='my-10'>
           {posts.map((post) => (

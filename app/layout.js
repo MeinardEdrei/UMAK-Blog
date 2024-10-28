@@ -1,5 +1,6 @@
 import "./globals.css";
 import Header from './components/Header'
+import Providers from '../lib/providers'
 
 export const metadata = {
   title: "UMAK Blog",
@@ -13,8 +14,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Header />
-        {children}
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );

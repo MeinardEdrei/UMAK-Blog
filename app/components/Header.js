@@ -4,8 +4,10 @@ import React from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
 
 const Header = () => {
+  const { data: session } = useSession();
   const pathname = usePathname();
 
   return (
@@ -20,14 +22,21 @@ const Header = () => {
             <h1 className='text-white font-bold text-xl'>UMAK BLOG</h1>
         </Link>
         <div>
-          {pathname !== '/login' && pathname !== '/register' && (
+          {pathname !== '/login' && pathname !== '/register' && session === null && (
             <Link
               href='/login'
               className='bg-white rounded-full font-bold p-2'>
                 Log in
             </Link>
           )}
-          
+          {session && (
+            <button
+              onClick={() => signOut()}
+              className='bg-white rounded-full font-bold p-2'
+            >
+              Sign Out
+            </button>
+          )}
         </div>
       </nav>
     </div>
